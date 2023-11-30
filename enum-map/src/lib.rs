@@ -46,6 +46,8 @@
 
 #[cfg(feature = "arbitrary")]
 mod arbitrary;
+#[cfg(feature = "borsh")]
+mod borsh;
 mod enum_map_impls;
 mod internal;
 mod iter;
