@@ -1,0 +1,43 @@
+# SPDX-FileCopyrightText: 2023 Kamila Borowska <kamila@borowska.pw>
+#
+# SPDX-License-Identifier: MIT OR Apache-2.0
+
+when:
+  - event: pull_request
+  - event: push
+    branch:
+      - master
+
+steps:
+  lint:
+    group: test
+    image: fsfe/reuse:2.1.0@sha256:888418362aa2a8ebea12d8dbfb41fa8eeabd0c423f42df7e3968af4cbb8d2ef1
+    commands:
+      - reuse lint
+  miri:
+    group: test
+    image: instrumentisto/rust:nightly-2023-10-30@sha256:df4b29a42df8334407bacfc0241c43f2263f3159f96b263a86038296c2406ba6
+    environment:
+      - CARGO_TERM_COLOR=always
+    commands:
+      - rustup component add miri
+      - cargo miri test --all-features --locked --verbose
+  rustfmt:
+    group: test
+    image: rust:1.74.1@sha256:ca1dad9de65e57a6032fc6cf443e9e1d42a09ef8c4ec11c9fdc11cf58fa44260
+    commands:
+      - rustup component add rustfmt
+      - cargo fmt --check
+  test-stable: &rust
+    group: test
+    image: rust:1.74.1@sha256:ca1dad9de65e57a6032fc6cf443e9e1d42a09ef8c4ec11c9fdc11cf58fa44260
+    environment:
+      - CARGO_TERM_COLOR=always
+    commands:
+      - cargo build --all-features --locked --verbose
+      - cargo test --no-default-features --locked --verbose
+      - cargo test --all-features --locked --verbose
+  test-msrv:
+    <<: *rust
+    # Update Cargo.toml and renovate.json when updating this.
+    image: rust:1.66.1@sha256:f72949bcf1daf8954c0e0ed8b7e10ac4c641608f6aa5f0ef7c172c49f35bd9b5
