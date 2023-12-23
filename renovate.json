@@ -10,12 +10,8 @@
     {
       "matchPackageNames": ["rust"],
       "matchCurrentVersion": "/^1\\.66\\./",
-      "major": {
-        "enable": false
-      },
-      "minor": {
-        "enable": false
-      }
+      "matchUpdateTypes": ["major", "minor"],
+      "enabled": false
     }
   ]
 }
