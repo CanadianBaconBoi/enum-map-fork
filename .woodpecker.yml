@@ -16,7 +16,7 @@ steps:
       - reuse lint
   miri:
     group: test
-    image: instrumentisto/rust:nightly-2023-10-30@sha256:df4b29a42df8334407bacfc0241c43f2263f3159f96b263a86038296c2406ba6
+    image: instrumentisto/rust:nightly-2023-12-29@sha256:c8f003a491ca78767ca23a0ddcbc401329048727258d7316f3bb7a8335193ede
     environment:
       - CARGO_TERM_COLOR=always
     commands:
