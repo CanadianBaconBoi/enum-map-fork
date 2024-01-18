@@ -11,7 +11,7 @@ when:
 steps:
   lint:
     group: test
-    image: fsfe/reuse:2.1.0@sha256:888418362aa2a8ebea12d8dbfb41fa8eeabd0c423f42df7e3968af4cbb8d2ef1
+    image: fsfe/reuse:3.0.0@sha256:be7bf9e0bbe117c7905ce646f60af9c8e9f9de3fc5f6c673d09934adac06c35c
     commands:
       - reuse lint
   miri:
