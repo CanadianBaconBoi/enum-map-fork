@@ -48,6 +48,8 @@
 mod arbitrary;
 #[cfg(feature = "borsh")]
 mod borsh;
+#[cfg(feature = "bytemuck")]
+mod bytemuck;
 mod enum_map_impls;
 mod internal;
 mod iter;
@@ -245,6 +247,7 @@ macro_rules! enum_map {
 ///
 /// [reverse-complement in benchmark game]:
 ///     http://benchmarksgame.alioth.debian.org/u64q/program.php?test=revcomp&lang=rust&id=2
+#[repr(transparent)]
 pub struct EnumMap<K: Enum, V> {
     array: K::Array<V>,
 }

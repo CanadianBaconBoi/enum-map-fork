@@ -23,6 +23,7 @@ maintenance = { status = "passively-maintained" }
 [dependencies]
 arbitrary = { version = "1.0.0", optional = true }
 borsh = { version = "1.2.0", default-features = false, optional = true }
+bytemuck = { version = "1.18.0", optional = true }
 enum-map-derive = { version = "=1.0.0-beta.1", path = "../enum-map-derive", optional = true }
 serde = { version = "1.0.103", optional = true, default-features = false }
 
@@ -34,11 +35,12 @@ serde_test = "1.0.176"
 serde_json = "1.0.99"
 
 [package.metadata.docs.rs]
-features = ["arbitrary", "serde"]
+features = ["arbitrary", "bytemuck", "serde"]
 
 [features]
 default = ["derive"]
 arbitrary = ["dep:arbitrary"]
 borsh = ["dep:borsh"]
+bytemuck = ["dep:bytemuck"]
 derive = ["dep:enum-map-derive"]
 serde = ["dep:serde"]
