@@ -10,12 +10,12 @@ when:
 
 steps:
   lint:
-    group: test
+    depends_on: []
     image: fsfe/reuse:3.0.1@sha256:f8f4851e199f44a0e827ea7d248228e2045e26750707e4f5f1b5875caf4ac51a
     commands:
       - reuse lint
   miri:
-    group: test
+    depends_on: []
     image: instrumentisto/rust:nightly-2024-03-19@sha256:655a9cc22eb4143a679d893f38dbea03bb57cd0d27fa90fc5c3d3106a14a812e
     environment:
       CARGO_TERM_COLOR: always
@@ -23,13 +23,13 @@ steps:
       - rustup component add miri
       - cargo miri test --all-features --locked --verbose
   rustfmt:
-    group: test
+    depends_on: []
     image: rust:1.77.0@sha256:00e330d2e2cdada2b75e9517c8359df208b3c880c5e34cb802c120083d50af35
     commands:
       - rustup component add rustfmt
       - cargo fmt --check
   test-stable: &rust
-    group: test
+    depends_on: []
     image: rust:1.77.0@sha256:00e330d2e2cdada2b75e9517c8359df208b3c880c5e34cb802c120083d50af35
     environment:
       CARGO_TERM_COLOR: always
