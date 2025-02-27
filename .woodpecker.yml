@@ -24,13 +24,13 @@ steps:
       - cargo miri test --all-features --locked --verbose
   rustfmt:
     depends_on: []
-    image: rust:1.77.0@sha256:00e330d2e2cdada2b75e9517c8359df208b3c880c5e34cb802c120083d50af35
+    image: rust:1.85.0@sha256:caa4a0e7bd1fe2e648caf3d904bc54c3bfcae9e74b4df2eb9ebe558c9e9e88c5
     commands:
       - rustup component add rustfmt
       - cargo fmt --check
   test-stable: &rust
     depends_on: []
-    image: rust:1.77.0@sha256:00e330d2e2cdada2b75e9517c8359df208b3c880c5e34cb802c120083d50af35
+    image: rust:1.85.0@sha256:caa4a0e7bd1fe2e648caf3d904bc54c3bfcae9e74b4df2eb9ebe558c9e9e88c5
     environment:
       CARGO_TERM_COLOR: always
     commands:
