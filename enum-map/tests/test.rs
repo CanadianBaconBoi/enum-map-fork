@@ -6,17 +6,25 @@
 // SPDX-FileCopyrightText: 2022 Cass Fridkin <cass@cloudflare.com>
 //
 // SPDX-License-Identifier: MIT OR Apache-2.0
+#![warn(clippy::pedantic)]
+
+use std::{
+    cell::{Cell, RefCell},
+    collections::HashSet,
+    convert::Infallible,
+    marker::PhantomData,
+    num::ParseIntError,
+    panic::{catch_unwind, UnwindSafe},
+};
 
 use enum_map::{enum_map, Enum, EnumMap, IntoIter};
 #[allow(unused_imports)]
 use enum_map_derive::*;
-use std::cell::{Cell, RefCell};
-use std::collections::HashSet;
-use std::convert::Infallible;
-use std::marker::PhantomData;
-use std::num::ParseIntError;
-use std::panic::{catch_unwind, UnwindSafe};
 
+#[allow(
+    dead_code,
+    reason = "this only exists to verify that the macro doesn't invoke it"
+)]
 trait From<T>: Sized {
     fn from(_: T) -> Self {
         unreachable!();
@@ -57,7 +65,7 @@ fn test_clone() {
 #[test]
 fn test_debug() {
     let map = enum_map! { false => 3, true => 5 };
-    assert_eq!(format!("{:?}", map), "{false: 3, true: 5}");
+    assert_eq!(format!("{map:?}"), "{false: 3, true: 5}");
 }
 
 #[test]
@@ -327,7 +335,7 @@ fn into_iter() {
 fn into_iter_u8() {
     assert_eq!(
         enum_map! { i => i }.into_iter().collect::<Vec<_>>(),
-        (0..256).map(|x| (x as u8, x as u8)).collect::<Vec<_>>()
+        (0..=u8::MAX).map(|x| (x, x)).collect::<Vec<_>>()
     );
 }
 
@@ -336,7 +344,7 @@ struct DropReporter<'a> {
     value: usize,
 }
 
-impl<'a> Drop for DropReporter<'a> {
+impl Drop for DropReporter<'_> {
     fn drop(&mut self) {
         self.into.borrow_mut().push(self.value);
     }
@@ -375,7 +383,7 @@ fn values_rev_collect() {
         enum_map! { Example::A => 1, Example::B => 2, Example::C => 3 }
             .values()
             .rev()
-            .cloned()
+            .copied()
             .collect::<Vec<_>>()
     );
 }
@@ -426,7 +434,7 @@ fn empty_map() {
 }
 
 #[test]
-#[should_panic]
+#[should_panic(expected = "unreachable")]
 fn empty_value() {
     let _void: EnumMap<bool, Void> = enum_map! { _ => unreachable!() };
 }
@@ -458,6 +466,10 @@ impl Enum for X {
 fn assert_sync_send<T: Sync + Send>(_: T) {}
 
 #[test]
+#[allow(
+    clippy::needless_borrows_for_generic_args,
+    reason = "being extra thorough"
+)]
 fn assert_enum_map_does_not_copy_sync_send_dependency_of_keys() {
     let mut map = enum_map! { X::A(PhantomData) => true };
     assert_sync_send(map);
@@ -547,9 +559,7 @@ fn question_mark_failure() {
 fn map_panic() {
     let map: EnumMap<u8, String> = enum_map! { i => i.to_string() };
     map.map(|k, v| {
-        if k == 2 {
-            panic!("Intentional panic");
-        }
+        assert_ne!(k, 2, "Intentional panic");
         v + " modified"
     });
 }
@@ -611,9 +621,7 @@ fn drop_panic_into_iter() {
     }
     impl Drop for Storage<'_> {
         fn drop(&mut self) {
-            if self.should_panic {
-                panic!();
-            }
+            assert!(!self.should_panic);
         }
     }
     let cell = Cell::new(0);

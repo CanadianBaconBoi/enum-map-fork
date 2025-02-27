@@ -3,17 +3,18 @@
 //
 // SPDX-License-Identifier: MIT OR Apache-2.0
 
-use crate::type_length;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote, ToTokens};
 use syn::{DataEnum, Fields, FieldsNamed, FieldsUnnamed, Ident, Variant};
 
-pub fn generate(name: Ident, data_enum: DataEnum) -> TokenStream {
+use crate::type_length;
+
+pub fn generate(name: &Ident, data_enum: &DataEnum) -> TokenStream {
     let mut generator = EnumGenerator::empty();
     for variant in &data_enum.variants {
         generator.handle_variant(variant);
     }
-    generator.finish(&name)
+    generator.finish(name)
 }
 
 #[derive(Debug)]
@@ -113,7 +114,7 @@ impl EnumGenerator {
             into_usize_arms,
         } = self;
         let mut expr_into = quote! { #length };
-        let mut fields_length = quote! { 1usize };
+        let mut all_fields_length = quote! { 1usize };
         let mut params_from = quote! {};
         for (i, field) in fields.unnamed.iter().enumerate() {
             let ident = format_ident!("p{}", i);
@@ -121,21 +122,21 @@ impl EnumGenerator {
             let field_length = type_length(ty);
 
             expr_into = quote! {
-                (#expr_into + #fields_length * ::enum_map::Enum::into_usize(#ident))
+                (#expr_into + #all_fields_length * ::enum_map::Enum::into_usize(#ident))
             };
 
             params_from = quote! {
                 #params_from <#ty as ::enum_map::Enum>::from_usize(
-                    (value - #length) / #fields_length % #field_length
+                    (value - #length) / #all_fields_length % #field_length
                 ),
             };
 
-            fields_length = quote! { (#fields_length * #field_length) };
+            all_fields_length = quote! { (#all_fields_length * #field_length) };
         }
 
         *length = Length {
             units: 0,
-            opaque: quote! { (#length + #fields_length) },
+            opaque: quote! { (#length + #all_fields_length) },
         };
 
         let from_arms = &from_usize_arms;
@@ -166,30 +167,30 @@ impl EnumGenerator {
             into_usize_arms,
         } = self;
         let mut expr_into = quote! { #length };
-        let mut fields_length = quote! { 1usize };
+        let mut all_fields_length = quote! { 1usize };
         let mut params_from = quote! {};
 
-        for field in fields.named.iter() {
+        for field in &fields.named {
             let ident = field.ident.as_ref().unwrap();
             let ty = &field.ty;
             let field_length = type_length(ty);
 
             expr_into = quote! {
-                (#expr_into + #fields_length * ::enum_map::Enum::into_usize(#ident))
+                (#expr_into + #all_fields_length * ::enum_map::Enum::into_usize(#ident))
             };
 
             params_from = quote! {
                 #params_from #ident: <#ty as ::enum_map::Enum>::from_usize(
-                    (value - #length) / #fields_length % #field_length
+                    (value - #length) / #all_fields_length % #field_length
                 ),
             };
 
-            fields_length = quote! { (#fields_length * #field_length) };
+            all_fields_length = quote! { (#all_fields_length * #field_length) };
         }
 
         *length = Length {
             units: 0,
-            opaque: quote! { (#length + #fields_length) },
+            opaque: quote! { (#length + #all_fields_length) },
         };
 
         *from_usize_arms = quote! {
@@ -199,7 +200,7 @@ impl EnumGenerator {
         };
 
         let mut params_into = quote! {};
-        for field in fields.named.iter() {
+        for field in &fields.named {
             let ident = field.ident.as_ref().unwrap();
             params_into = quote! { #params_into #ident, };
         }

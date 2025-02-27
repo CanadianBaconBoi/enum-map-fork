@@ -3,13 +3,14 @@
 //
 // SPDX-License-Identifier: MIT OR Apache-2.0
 
-use crate::type_length;
 use proc_macro2::TokenStream;
 use quote::quote;
 use syn::{DataStruct, Fields, FieldsNamed, FieldsUnnamed, Ident, Index};
 
-pub fn generate(name: Ident, data_struct: DataStruct) -> TokenStream {
-    StructGenerator::from_fields(&data_struct.fields).finish(&name)
+use crate::type_length;
+
+pub fn generate(name: &Ident, data_struct: &DataStruct) -> TokenStream {
+    StructGenerator::from_fields(&data_struct.fields).finish(name)
 }
 
 /// Total length is the product of each member's length. To represent a struct, one can
@@ -73,7 +74,7 @@ impl StructGenerator {
         let mut params_from = quote! {};
         let mut into_usize = quote! { 0usize };
         let mut length = quote! { 1usize };
-        for field in fields.named.iter() {
+        for field in &fields.named {
             let ty = &field.ty;
             let ident = field.ident.as_ref().unwrap();
             let field_length = type_length(ty);

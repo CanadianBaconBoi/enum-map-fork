@@ -160,12 +160,16 @@ use syn::{Data, DeriveInput, Type};
 /// assert_eq!(Foo::from_usize(9), Foo(true, A::C, X::Z));
 #[proc_macro_derive(Enum)]
 pub fn derive_enum_map(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let input: DeriveInput = syn::parse(input).unwrap();
+    let Ok(input) = syn::parse::<DeriveInput>(input) else {
+        return quote! { compile_error! {"invalid #[derive(Enum)] syntax"} }.into();
+    };
 
     let result = match input.data {
-        Data::Enum(data_enum) => derive_enum::generate(input.ident, data_enum),
-        Data::Struct(data_struct) => derive_struct::generate(input.ident, data_struct),
-        _ => quote! { compile_error! {"#[derive(Enum)] is only defined for enums and structs"} },
+        Data::Enum(data_enum) => derive_enum::generate(&input.ident, &data_enum),
+        Data::Struct(data_struct) => derive_struct::generate(&input.ident, &data_struct),
+        Data::Union(_) => {
+            quote! { compile_error! {"#[derive(Enum)] is only defined for enums and structs"} }
+        }
     };
 
     result.into()

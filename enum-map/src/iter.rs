@@ -47,7 +47,7 @@ pub struct Iter<'a, K, V: 'a> {
     iterator: Enumerate<slice::Iter<'a, V>>,
 }
 
-impl<'a, K: Enum, V> Clone for Iter<'a, K, V> {
+impl<K: Enum, V> Clone for Iter<'_, K, V> {
     fn clone(&self) -> Self {
         Iter {
             _phantom: PhantomData,
@@ -80,7 +80,7 @@ impl<'a, K: Enum, V> Iterator for Iter<'a, K, V> {
     }
 }
 
-impl<'a, K: Enum, V> DoubleEndedIterator for Iter<'a, K, V> {
+impl<K: Enum, V> DoubleEndedIterator for Iter<'_, K, V> {
     #[inline]
     fn next_back(&mut self) -> Option<Self::Item> {
         self.iterator
@@ -89,9 +89,9 @@ impl<'a, K: Enum, V> DoubleEndedIterator for Iter<'a, K, V> {
     }
 }
 
-impl<'a, K: Enum, V> ExactSizeIterator for Iter<'a, K, V> {}
+impl<K: Enum, V> ExactSizeIterator for Iter<'_, K, V> {}
 
-impl<'a, K: Enum, V> FusedIterator for Iter<'a, K, V> {}
+impl<K: Enum, V> FusedIterator for Iter<'_, K, V> {}
 
 impl<'a, K: Enum, V> IntoIterator for &'a EnumMap<K, V> {
     type Item = (K, &'a V);
@@ -159,7 +159,7 @@ impl<'a, K: Enum, V> Iterator for IterMut<'a, K, V> {
     }
 }
 
-impl<'a, K: Enum, V> DoubleEndedIterator for IterMut<'a, K, V> {
+impl<K: Enum, V> DoubleEndedIterator for IterMut<'_, K, V> {
     #[inline]
     fn next_back(&mut self) -> Option<Self::Item> {
         self.iterator
@@ -168,9 +168,9 @@ impl<'a, K: Enum, V> DoubleEndedIterator for IterMut<'a, K, V> {
     }
 }
 
-impl<'a, K: Enum, V> ExactSizeIterator for IterMut<'a, K, V> {}
+impl<K: Enum, V> ExactSizeIterator for IterMut<'_, K, V> {}
 
-impl<'a, K: Enum, V> FusedIterator for IterMut<'a, K, V> {}
+impl<K: Enum, V> FusedIterator for IterMut<'_, K, V> {}
 
 impl<'a, K: Enum, V> IntoIterator for &'a mut EnumMap<K, V> {
     type Item = (K, &'a mut V);
@@ -324,7 +324,7 @@ impl<K: Enum, V> EnumMap<K, V> {
 /// See its documentation for more.
 pub struct Values<'a, V: 'a>(slice::Iter<'a, V>);
 
-impl<'a, V> Clone for Values<'a, V> {
+impl<V> Clone for Values<'_, V> {
     fn clone(&self) -> Self {
         Values(self.0.clone())
     }
