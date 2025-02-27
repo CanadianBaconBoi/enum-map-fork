@@ -1,4 +1,4 @@
-# SPDX-FileCopyrightText: 2023 Kamila Borowska <kamila@borowska.pw>
+# SPDX-FileCopyrightText: 2023 - 2025 Kamila Borowska <kamila@borowska.pw>
 #
 # SPDX-License-Identifier: MIT OR Apache-2.0
 
@@ -18,7 +18,7 @@ steps:
     group: test
     image: instrumentisto/rust:nightly-2024-03-19@sha256:655a9cc22eb4143a679d893f38dbea03bb57cd0d27fa90fc5c3d3106a14a812e
     environment:
-      - CARGO_TERM_COLOR=always
+      CARGO_TERM_COLOR: always
     commands:
       - rustup component add miri
       - cargo miri test --all-features --locked --verbose
@@ -32,7 +32,7 @@ steps:
     group: test
     image: rust:1.77.0@sha256:00e330d2e2cdada2b75e9517c8359df208b3c880c5e34cb802c120083d50af35
     environment:
-      - CARGO_TERM_COLOR=always
+      CARGO_TERM_COLOR: always
     commands:
       - cargo build --all-features --locked --verbose
       - cargo test --no-default-features --locked --verbose
