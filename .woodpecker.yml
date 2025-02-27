@@ -11,7 +11,7 @@ when:
 steps:
   lint:
     depends_on: []
-    image: fsfe/reuse:3.0.1@sha256:f8f4851e199f44a0e827ea7d248228e2045e26750707e4f5f1b5875caf4ac51a
+    image: fsfe/reuse:3.0.1@sha256:f17b4bea47ee3cad4e2f9a72468b95e0f63c02bc89600dc3445b3c387685e2c8
     commands:
       - reuse lint
   miri:
