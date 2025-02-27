@@ -203,6 +203,7 @@ macro_rules! enum_map {
 
                 unsafe { (&mut eq.guard).push(value); }
             }
+            #[allow(clippy::mem_forget, reason = "avoid Drop impl on Guard on success")]
             $crate::mem::forget(eq);
             // Safe because the array was fully initialized.
             $crate::EnumMap::from_array(unsafe { uninit.assume_init() })

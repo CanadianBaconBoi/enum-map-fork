@@ -3,6 +3,7 @@
 // SPDX-FileCopyrightText: 2023 Mateusz Kowalczyk <fuuzetsu@fuuzetsu.co.uk>
 //
 // SPDX-License-Identifier: MIT OR Apache-2.0
+#![warn(clippy::pedantic)]
 
 use enum_map::enum_map;
 use enum_map_derive::Enum;

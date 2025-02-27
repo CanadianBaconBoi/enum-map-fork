@@ -6,6 +6,7 @@
 // SPDX-FileCopyrightText: 2022 Cass Fridkin <cass@cloudflare.com>
 //
 // SPDX-License-Identifier: MIT OR Apache-2.0
+#![warn(clippy::pedantic)]
 
 use enum_map::{enum_map, Enum, EnumMap, IntoIter};
 #[allow(unused_imports)]
