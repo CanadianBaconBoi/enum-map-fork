@@ -40,4 +40,4 @@ steps:
   test-msrv:
     <<: *rust
     # Update Cargo.toml and renovate.json when updating this.
-    image: rust:1.66.1@sha256:f72949bcf1daf8954c0e0ed8b7e10ac4c641608f6aa5f0ef7c172c49f35bd9b5
+    image: rust:1.66.1@sha256:23b7815cff2b70148cc7fa732825a5384a347b38217f162525c8f86610a6ae35
