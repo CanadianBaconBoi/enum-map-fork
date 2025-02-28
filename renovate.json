@@ -9,7 +9,7 @@
     },
     {
       "matchPackageNames": ["rust"],
-      "matchCurrentVersion": "/^1\\.66\\./",
+      "matchCurrentVersion": "/^1\\.81\\./",
       "matchUpdateTypes": ["major", "minor"],
       "enabled": false
     }
