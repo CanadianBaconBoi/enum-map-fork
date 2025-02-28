@@ -1,10 +1,10 @@
 #![cfg(feature = "serde")]
+#![warn(clippy::pedantic)]
 
 // SPDX-FileCopyrightText: 2017 - 2022 Kamila Borowska <kamila@borowska.pw>
 // SPDX-FileCopyrightText: 2022 Cass Fridkin <cass@cloudflare.com>
 //
 // SPDX-License-Identifier: MIT OR Apache-2.0
-#![warn(clippy::pedantic)]
 
 use enum_map::{enum_map, EnumMap};
 use enum_map_derive::Enum;
