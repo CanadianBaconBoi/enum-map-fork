@@ -99,6 +99,32 @@ impl Enum for u8 {
     }
 }
 
+impl Enum for i32 {
+    type Array<V> = [V; 256];
+
+    #[inline]
+    fn from_usize(value: usize) -> Self {
+        value.try_into().unwrap_or_else(|_| out_of_bounds())
+    }
+    #[inline]
+    fn into_usize(self) -> usize {
+        self as usize
+    }
+}
+
+impl Enum for u64 {
+    type Array<V> = [V; 256];
+
+    #[inline]
+    fn from_usize(value: usize) -> Self {
+        value.try_into().unwrap_or_else(|_| out_of_bounds())
+    }
+    #[inline]
+    fn into_usize(self) -> usize {
+        self as usize
+    }
+}
+
 impl Enum for Infallible {
     type Array<V> = [V; 0];
 
